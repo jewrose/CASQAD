@@ -1,0 +1,846 @@
+<form name="mturk_form" method="post" id="mturk_form" action="#">
+    <meta charset="UTF-8"/>
+    <input value="" name="assignmentId" id="assignmentId" type="hidden">
+    <!-- ################################################################ -->
+    <!-- Configuration -->
+    <script>
+        var config = {};
+        config.placeholder = "${placeholder}";
+        config.city = "${city}"; // TODO ${city}
+        config.backend = "http://localhost:8080/ask";
+        //config.batchID = "$_{batchID}";
+
+        var panorama;
+
+        var usedQuestionIDs = [];
+
+        var qID = 0;
+
+        function showSV() {
+            panorama = new google.maps.StreetViewPanorama(
+                $('#street-view')[0],
+                {
+                    position: {lat: parseFloat("52.3737913"), lng: parseFloat("9.7417629"), p: 0}, // TODO
+                    pov: {heading: parseFloat("271.6645611836384"), pitch: 0}, // TODO
+                    addressControl: false,
+                    clickToGo: false,
+                    disableDefaultUI: true,
+                    zoom: 0
+                }
+            );
+        }
+    </script>
+    <!-- End Configuration -->
+    <!-- ###################################################################################################### -->
+    <!-- Bootstrap v3.0.3 -->
+    <link href="https://s3.amazonaws.com/mturk-public/bs30/css/bootstrap.min.css" rel="stylesheet"/>
+    <section class="container" id="Other"
+             style="margin-bottom:15px; padding: 10px 10px; font-family: Verdana, Geneva, sans-serif; color:#333333; font-size:0.9em;">
+        <div class="row col-xs-12 col-md-12">
+            <!-- Instructions -->
+            <div class="panel panel-primary" id="instruction">
+                <a class="panel-heading collapseTrigger" href="#" id="collapseInstructionTrigger">
+                    <strong>Instruction</strong>
+                    <span id="instructionHeader">(Click to collapse)</span>
+                </a>
+                <div class="panel-body" id="instructionBody">
+                    <p><span
+                            style="color:#FF0000;"><strong>Please read the instructions and the scenario carefully.</strong></span>
+                    </p>
+                    <p>Instructions:</p>
+                    <ul>
+                        <li>
+                            In each scenario, you will see a Google Street View panorama located in a German city.
+                        </li>
+                        <li>
+                            Change the field of view by holding the left mouse button and dragging the curser on the
+                            panorama to get
+                            a complete look of your surroundings.
+                        </li>
+                        <li>
+                            You can also zoom in and out using the mouse wheel while the curser is positioned over the
+                            panorama.
+                        </li>
+                        <li>
+                            The panorama includes POIs (buildings, monuments, shops, parks, etc.).
+                        </li>
+                        <li>
+                            The aim is for you to ask questions about POIs. Just imagine you are a tourist in that city.
+                        </li>
+                        <li>
+                            To <span style="color:#FF0000;">create a new question</span>, press the
+                            <strong><span class="AddButton">addButtonPlaceholder</span><span
+                                    style="color:#FF0000;">-button</span></strong> below the panorama.
+                        </li>
+                        <li>
+                            <span style="color:#FF0000;">Your target is to pose at least <strong>THREE</strong> questions.</span>
+                        </li>
+                        <li>
+                            You can <span style="color:#FF0000;">delete a question box including its question</span>
+                            using the
+                            <span class="RemoveButton">removeButtonPlaceholder</span><span style="color:#FF0000;">-button</span>.
+                        </li>
+                        <li><strong>When posing a question, please make sure the current field of view is oriented
+                            towards the
+                            questions subject.</strong>
+                        </li>
+                        <li>
+                            You can update the position information using the <span
+                                class="UpdateButton">UpdateButtonPlaceholder</span>-button
+                            e.g. when changing the view towards your
+                            questions subject AFTER you start writing text in the question box or when realigning it due
+                            to a better
+                            view.
+                        </li>
+                    </ul>
+                    <p><strong>Please only ask questions about surrounding POIs visible in the panorama.</strong></p>
+                    <p><strong>Please don&rsquo;t ask personal questions.</strong></p>
+                    <p><strong>The following or similar questions will <u>not</u> be awarded:</strong></p>
+                    <ul>
+                        <li>Where am I?</li>
+                        <li>How are you?</li>
+                        <li>What is your name?</li>
+                        <li>What time is it?</li>
+                        <li>Which city / country / state is it?</li>
+                        <li>Which way to ...?</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End Instructions -->
+            <!-- Content Body -->
+            <section>
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><strong>How to control the panorama</strong></div>
+                    <div class="panel-body">
+                        <ul>
+                            <li>Hold the left mouse button to move your surroundings.</li>
+                            <li>Use the mouse wheel to zoom in and out.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="street-view">&nbsp;</div>
+                <p>&nbsp;</p>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <strong>Scenario</strong> <span id="scenarioHeader">placeholder</span>
+                        <div class="controls">
+                            <button class="right AddButton" id="addQuestion" title="add new question" type="button">add
+                                Question
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                            <li>You drive your car through the German city of ${city}.</li>
+                            <li>The Street View Panorama represents the view from your car.</li>
+                            <li>You have never been to ${city} and would like to know more about the POIs in ${city}.
+                            </li>
+                            <li>That's why you hired a local guide to answer your questions about the POI&rsquo;s.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="questions">
+                    <div class='panel panel-primary question'>
+                        <div class='panel-heading'>
+                            <strong>Question</strong>
+                            <div class='controls'>
+                                <button title='show / hide additional data' type='button' id='toggleMetadata_0'><i
+                                        class='fas fa-eye'></i></button>
+                                <button class='UpdateButton' title='update meta data' type='button'
+                                        id='updateMetadata_0'><i class='fas fa-sync'></i></button>
+                                <button class='RemoveButton' title='remove question' type='button'
+                                        id='deleteQuestion_0'><i class='fas fa-trash-alt'></i></button>
+                            </div>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='metadata'>
+                                <fieldset>
+                                    <legend>Current meta data (to update use the <span class='UpdateButton'><i
+                                            class='fas fa-sync'></i></span>-button):
+                                    </legend>
+                                    <span class='formGroup'>
+                                        <label for='id_0'>id:</label>
+                                        <input type='text' id='id_0' name='id_0' required pattern='[0-9]{1,2}'
+                                               title='question id' readonly class='id' value='0'/>
+                                    </span> <br>
+                                    <span class='formGroup'>
+                                        <label for='timestamp_0'>timestamp:</label>
+                                        <input type='text' id='timestamp_0' name='timestamp_0' required
+                                               pattern='[0-9]{1,11}'
+                                               title='timestamp value' readonly class='timestamp'
+                                               value=' + new Date().getTime() + '/>
+                                    </span> <br>
+                                    <span class='formGroup'>
+                                        <label for='lat_0'>lat:</label>
+                                        <input type='text' id='lat_0' name='lat_0' required
+                                               pattern='-?[0-9]{1,3}\\.[0-9]{0,6}'
+                                               title='lat value' readonly class='lat'
+                                               value=' + panorama.position.lat() + '/>
+                                    </span> <br>
+                                    <span class='formGroup'>
+                                        <label for='lng_0'>lng:</label>
+                                        <input type='text' id='lng_0' name='lng_0' required
+                                               pattern='-?[0-9]{1,3}\\.[0-9]{0,6}'
+                                               title='lng value' readonly class='lng'
+                                               value=' + panorama.position.lng() + '/>
+                                    </span> <br>
+                                    <span class='formGroup'>
+                                        <label for='zoom_0'>zoom:</label>
+                                        <input type='text' id='zoom_0' name='zoom_0' required
+                                               pattern='[0-9]{1}\\.[0-9]{0,}'
+                                               title='zoom value' readonly class='zoom'
+                                               value=' + panorama.pov.zoom + '/>
+                                    </span> <br>
+                                    <span class='formGroup'>
+                                        <label for='heading_0'>heading:</label>
+                                        <input type='text' id='heading_0' name='heading_0' required
+                                               pattern='[0-9]{3}\\.[0-9]{0,}'
+                                               title='heading value' readonly class='heading'
+                                               value=' + panorama.pov.heading + '/>
+                                    </span> <br>
+                                    <span class='formGroup'>
+                                        <label for='pitch_0'>pitch:</label>
+                                        <input type='text' id='pitch_0' name='pitch_0' required
+                                               pattern='-?[0-9]{2}\\.[0-9]{0,}'
+                                               title='pitch value' readonly class='pitch'
+                                               value=' + panorama.pov.pitch + '/>
+                                    </span>
+                                </fieldset>
+                            </div>
+                            <fieldset>
+                                <ul>
+                                    <li>Please remember to have the field of view directed at your questions subject.
+                                    </li>
+                                    <li>If you want to update the position hit the <span class='UpdateButton'><i
+                                            class='fas fa-sync'></i></span>-button
+                                    </li>
+                                </ul>
+                                <textarea rows='4' id='question_0' name='question_0' class='textbox'
+                                          placeholder='Your question...'></textarea>
+                                <p class="text-center ask">
+                                    <button id="answerQuestion_0" class="btn btn-primary" title="ask the question"
+                                            type="button">ask the question
+                                    </button>
+                                </p>
+                            </fieldset>
+                            <fieldset>
+                                <textarea rows='1' id='answer_0' name='answer_0' class='textbox' readonly
+                                          placeholder='The answer appears here... please push the \"ask the question\"-button'></textarea><br>
+                                <span class='formGroup'>
+                                    <label for='poi_0'>Recognized POI:</label>
+                                    <input id="poi_0" name="poi_0" type="text" value="" readonly>
+                                </span>
+                                <br>
+                                <span class='formGroup'>
+                                    <label for='intent_0'>Recognized intention:</label>
+                                    <input id="intent_0" name="intent_0" type="text" value="" readonly>
+                                </span>
+                                <br>
+                                <span class='formGroup'>
+                                    <label for='wrongPOI_0'>Wrong POI:</label>
+                                    <input type="checkbox" id="wrongPOI_0" name="wrongPOI_0" value="wrongPOI">
+                                    <select name="wrongPOI_List_0" id="wrongPOI_List_0" title="POI">
+                                        <option value="" selected></option>
+                                    </select>
+                                </span>
+                                <br>
+                                <span class='formGroup'>
+                                    <label for='wrongintent_0'>Wrong question intent:</label>
+                                    <input type="checkbox" id="wrongintent_0" name="wrongintent_0"
+                                           value="wrongintent">
+                                    <select name="wrongintent_List_0" id="wrongintent_List_0" title="intent">
+                                        <option value="" selected></option>
+                                    </select>
+                                </span>
+                                <br>
+                                <span class='formGroup'>
+                                    <label for='rating_0'>Expectations are fulfilled:</label>
+                                    <select name="rating_0" id="rating_0">
+                                        <option value="0" selected></option>
+                                        <option value="1">&#x2605;</option>
+                                        <option value="2">&#x2605;&#x2605;</option>
+                                        <option value="3">&#x2605;&#x2605;&#x2605;</option>
+                                        <option value="4">&#x2605;&#x2605;&#x2605;&#x2605;</option>
+                                        <option value="5">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</option>
+                                    </select>
+                                </span>
+                                <input id="status_0" name="status_0" type="hidden" value="">
+                                <input id="propertyName_0" name="propertyName_0" type="hidden" value="">
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End Content Body -->
+        </div>
+    </section>
+    <!-- close container -->
+    <style type="text/css">
+        fieldset {
+            padding: 10px;
+            background: #fbfbfb;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .collapseTrigger {
+            color: #fff;
+            display: block;
+            text-decoration: none;
+        }
+
+        #street-view {
+            min-height: 480px;
+            max-height: 100%;
+        }
+
+        .controls {
+            float: right;
+        }
+
+        .metadata {
+            display: none;
+        }
+
+        .textbox {
+            width: 100%;
+            box-sizing: border-box; /* For IE and modern versions of Chrome */
+            -moz-box-sizing: border-box; /* For Firefox                     */
+            -webkit-box-sizing: border-box; /* For Safari                   */
+            margin-bottom: 10px;
+        }
+
+        .formGroup {
+            white-space: nowrap;
+        }
+
+        .ask {
+            margin-top: 10px;
+        }
+
+        label {
+            display: block;
+            float: left;
+            width: 200px;
+            margin-bottom: 0;
+        }
+    </style>
+    <!-- Close internal style sheet -->
+    <!-- Please note that Bootstrap CSS/JS and JQuery are 3rd party libraries that may update their url/code at any time. Amazon Mechanical Turk (MTurk) is including these libraries as a default option for you, but is not responsible for any changes to the external libraries -->
+    <!--<script src="https://code.jquery.com/jquery-3.1.0.min.js"
+            integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+            crossorigin="anonymous"></script>-->
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous"></script>
+    <!--<script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"
+            integrity="sha384-s1ITto93iSMDxlp/79qhWHi+LsIi9Gx6yL+cOKDuymvihkfol83TYbLbOw+W/wv4"
+            crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"
+            integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ"
+            crossorigin="anonymous"></script>
+    <script>
+        function toggleCollapseInstruction() {
+            var body = $('#instructionBody');
+            var header = $('#instructionHeader');
+
+            body.toggle();
+            if (body.is(':visible')) {
+                header.text('(Click to collapse)');
+                saveState("instructionsCollapse", "show");
+            } else {
+                header.text('(Click to expand)');
+                saveState("instructionsCollapse", "hide");
+            }
+        }
+
+        function updateScenarioQuestionsCounter() {
+            var header = $("#scenarioHeader");
+            var anzahl = 3 - usedQuestionIDs.length;
+            if (anzahl < 0) {
+                anzahl = 0;
+            }
+            header.text('(Please pose at least ' + anzahl + ' more questions)');
+
+            if (usedQuestionIDs.length < 3) {
+                header.css('color', '#FFFF00');
+            } else {
+                header.css('color', '#00FF00');
+            }
+        }
+
+        function updateMetaData(event) {
+            if (event["type"] !== "change" || $(this).data('oldValue').trim().length === 0) {
+                var question = $(event.currentTarget).parents('.question');
+
+                question.find('.timestamp').val(new Date().getTime());
+                question.find('.lat').val(panorama.position.lat());
+                question.find('.lng').val(panorama.position.lng());
+                question.find('.zoom').val(panorama.pov.zoom);
+                question.find('.heading').val(panorama.pov.heading);
+                question.find('.pitch').val(panorama.pov.pitch);
+            }
+        }
+
+        function toggleMetaData(event) {
+            var button = $(event.currentTarget);
+            var question = button.parents('.question');
+            var metaData = question.find('.metadata');
+
+            if (metaData.is(':hidden')) {
+                button.html("<i class='fas fa-eye-slash'></i>");
+                metaData.show();
+            } else {
+                button.html("<i class='fas fa-eye'></i>");
+                metaData.hide();
+            }
+        }
+
+        function deleteQuestion(event) {
+            var question = $(event.currentTarget).parents('.question');
+            var questionID = question.find('.id').val();
+
+            usedQuestionIDs = usedQuestionIDs.filter(function (value) {
+                return value != questionID;
+            });
+
+            question.remove();
+
+            updateScenarioQuestionsCounter();
+        }
+
+        function addQuestion() {
+            var questions;
+
+            qID++;
+
+            usedQuestionIDs.push(qID);
+
+            questions = $('#questions');
+            questions.prepend(
+                "                    <div class='panel panel-primary question'>\n" +
+                "                        <div class='panel-heading'>\n" +
+                "                            <strong>Question</strong>\n" +
+                "                            <div class='controls'>\n" +
+                "                                <button title='show / hide additional data' type='button' id='toggleMetadata_" + qID + "'><i\n" +
+                "                                        class='fas fa-eye'></i></button>\n" +
+                "                                <button class='UpdateButton' title='update meta data' type='button'\n" +
+                "                                        id='updateMetadata_" + qID + "'><i class='fas fa-sync'></i></button>\n" +
+                "                                <button class='RemoveButton' title='remove question' type='button'\n" +
+                "                                        id='deleteQuestion_" + qID + "'><i class='fas fa-trash-alt'></i></button>\n" +
+                "                            </div>\n" +
+                "                        </div>\n" +
+                "                        <div class='panel-body'>\n" +
+                "                            <div class='metadata'>\n" +
+                "                                <fieldset>\n" +
+                "                                    <legend>Current meta data (to update use the <span class='UpdateButton'><i\n" +
+                "                                            class='fas fa-sync'></i></span>-button):\n" +
+                "                                    </legend>\n" +
+                "                                    <span class='formGroup'>\n" +
+                "                                        <label for='id_" + qID + "'>id:</label>\n" +
+                "                                        <input type='text' id='id_" + qID + "' name='id_" + qID + "' required pattern='[0-9]{1,2}'\n" +
+                "                                               title='question id' readonly class='id' value='" + qID + "'/>\n" +
+                "                                    </span><br>\n" +
+                "                                    <span class='formGroup'>\n" +
+                "                                        <label for='timestamp_" + qID + "'>timestamp:</label>\n" +
+                "                                        <input type='text' id='timestamp_" + qID + "' name='timestamp_" + qID + "' required\n" +
+                "                                               pattern='[0-9]{1,11}'\n" +
+                "                                               title='timestamp value' readonly class='timestamp'\n" +
+                "                                               value='" + new Date().getTime() + "'/>\n" +
+                "                                    </span><br>\n" +
+                "                                    <span class='formGroup'>\n" +
+                "                                        <label for='lat_" + qID + "'>lat:</label>\n" +
+                "                                        <input type='text' id='lat_" + qID + "' name='lat_" + qID + "' required\n" +
+                "                                               pattern='-?[0-9]{1,3}\\.[0-9]{0,6}'\n" +
+                "                                               title='lat value' readonly class='lat'\n" +
+                "                                               value='" + panorama.position.lat() + "'/>\n" +
+                "                                    </span><br>\n" +
+                "                                    <span class='formGroup'>\n" +
+                "                                        <label for='lng_" + qID + "'>lng:</label>\n" +
+                "                                        <input type='text' id='lng_" + qID + "' name='lng_" + qID + "' required\n" +
+                "                                               pattern='-?[0-9]{1,3}\\.[0-9]{0,6}'\n" +
+                "                                               title='lng value' readonly class='lng'\n" +
+                "                                               value='" + panorama.position.lng() + "'/>\n" +
+                "                                    </span><br>\n" +
+                "                                    <span class='formGroup'>\n" +
+                "                                        <label for='zoom_" + qID + "'>zoom:</label>\n" +
+                "                                        <input type='text' id='zoom_" + qID + "' name='zoom_" + qID + "' required\n" +
+                "                                               pattern='[0-9]{1}\\.[0-9]{0,}'\n" +
+                "                                               title='zoom value' readonly class='zoom'\n" +
+                "                                               value='" + panorama.pov.zoom + "'/>\n" +
+                "                                    </span><br>\n" +
+                "                                    <span class='formGroup'>\n" +
+                "                                        <label for='heading_" + qID + "'>heading:</label>\n" +
+                "                                        <input type='text' id='heading_" + qID + "' name='heading_" + qID + "' required\n" +
+                "                                               pattern='[0-9]{3}\\.[0-9]{0,}'\n" +
+                "                                               title='heading value' readonly class='heading'\n" +
+                "                                               value='" + panorama.pov.heading + "'/>\n" +
+                "                                    </span><br>\n" +
+                "                                    <span class='formGroup'>\n" +
+                "                                        <label for='pitch_" + qID + "'>pitch:</label>\n" +
+                "                                        <input type='text' id='pitch_" + qID + "' name='pitch_" + qID + "' required\n" +
+                "                                               pattern='-?[0-9]{2}\\.[0-9]{0,}'\n" +
+                "                                               title='pitch value' readonly class='pitch'\n" +
+                "                                               value='" + panorama.pov.pitch + "'/>\n" +
+                "                                    </span>\n" +
+                "                                </fieldset>\n" +
+                "                            </div>\n" +
+                "                            <fieldset>\n" +
+                "                                <ul>\n" +
+                "                                    <li>Please remember to have the field of view directed at your questions subject.\n" +
+                "                                    </li>\n" +
+                "                                    <li>If you want to update the position hit the <span class='UpdateButton'><i\n" +
+                "                                            class='fas fa-sync'></i></span>-button\n" +
+                "                                    </li>\n" +
+                "                                </ul>\n" +
+                "                                <textarea rows='4' id='question_" + qID + "' name='question_" + qID + "' class='textbox'\n" +
+                "                                          placeholder='Your question...'></textarea>\n" +
+                "                                <p class='text-center ask'>\n" +
+                "                                    <button id='answerQuestion_" + qID + "' class='btn btn-primary' title='ask the question'\n" +
+                "                                            type='button'>ask the question</button>\n" +
+                "                                </p>\n" +
+                "                            </fieldset>\n" +
+                "                            <fieldset>\n" +
+                "                                <textarea rows='1' id='answer_" + qID + "' name='answer_" + qID + "' class='textbox' readonly\n" +
+                "                                          placeholder='The answer appears here... please push the \"ask the question\"-button'></textarea><br>\n" +
+                "                                <span class='formGroup'>\n" +
+                "                                    <label for='poi_" + qID + "'>Recognized POI:</label>\n" +
+                "                                    <input id='poi_" + qID + "' name='poi_" + qID + "' type='text' value='' readonly>\n" +
+                "                                </span>\n" +
+                "                                <br>\n" +
+                "                                <span class='formGroup'>\n" +
+                "                                    <label for='intent_" + qID + "'>Recognized intention:</label>\n" +
+                "                                    <input id='intent_" + qID + "' name='intent_" + qID + "' type='text' value='' readonly>\n" +
+                "                                </span>\n" +
+                "                                <br>\n" +
+                "                                <span class='formGroup'>\n" +
+                "                                    <label for='wrongPOI_" + qID + "'>Wrong POI:</label>\n" +
+                "                                    <input type='checkbox' id='wrongPOI_" + qID + "' name='wrongPOI_" + qID + "' value='wrongPOI' disabled>\n" +
+                "                                    <select name='wrongPOI_List_" + qID + "' id='wrongPOI_List_" + qID + "' title='POI' disabled>\n" +
+                "                                        <option value='other' selected>other</option>\n" +
+                "                                    </select>\n" +
+                "                                </span>\n" +
+                "                                <br>\n" +
+                "                                <span class='formGroup'>\n" +
+                "                                    <label for='wrongintent_" + qID + "'>Wrong question intent:</label>\n" +
+                "                                    <input type='checkbox' id='wrongintent_" + qID + "' name='wrongintent_" + qID + "'\n" +
+                "                                           value='wrongintent' disabled>\n" +
+                "                                    <select name='wrongintent_List_" + qID + "' id='wrongintent_List_" + qID + "' title='intent' disabled>\n" +
+                "                                        <option value='other' selected>other</option>\n" +
+                "                                    </select>\n" +
+                "                                </span>\n" +
+                "                                <br>\n" +
+                "                                <span class='formGroup'>\n" +
+                "                                    <label for='rating_" + qID + "'>Expectations are fulfilled:</label>\n" +
+                "                                    <select name='rating_" + qID + "' id='rating_" + qID + "' disabled>\n" +
+                "                                        <option value='0' selected></option>\n" +
+                "                                        <option value='1'>&#x2605;</option>\n" +
+                "                                        <option value='2'>&#x2605;&#x2605;</option>\n" +
+                "                                        <option value='3'>&#x2605;&#x2605;&#x2605;</option>\n" +
+                "                                        <option value='4'>&#x2605;&#x2605;&#x2605;&#x2605;</option>\n" +
+                "                                        <option value='5'>&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</option>\n" +
+                "                                    </select>\n" +
+                "                                </span>\n" +
+                "                                <input id='status_" + qID + "' name='status_" + qID + "' type='hidden' value=''>\n" +
+                "                                <input id='propertyName_" + qID + "' name='propertyName_" + qID + "' type='hidden' value=''>\n" +
+                "                            </fieldset>\n" +
+                "                        </div>\n" +
+                "                    </div>\n");
+
+            $('#toggleMetadata_' + qID).click(toggleMetaData);
+            $('#updateMetadata_' + qID).click(updateMetaData);
+            $('#deleteQuestion_' + qID).click(deleteQuestion);
+            $('#answerQuestion_' + qID).click(answerQuestion);
+            var textarea = $('#question_' + qID);
+            textarea.change(validation);
+            textarea.change(updateMetaData);
+            textarea.focusin(getFocus);
+
+            updateScenarioQuestionsCounter();
+        }
+
+        function getFocus(event) {
+            $(this).data('oldValue', $(this).val().trim());
+        }
+
+        function saveState(key, value) {
+            if (typeof(Storage) !== "undefined") {
+                localStorage.setItem(key, value);
+            }
+        }
+
+        function getState(key, defaultValue) {
+            var value;
+            if (typeof(Storage) !== "undefined") {
+                value = localStorage.getItem(key);
+                if (value !== null) {
+                    return value;
+                } else {
+                    return defaultValue;
+                }
+            } else {
+                return defaultValue;
+            }
+        }
+
+        function validation(event) {
+            if (event["type"] === "submit") {
+                if ($(event.currentTarget).data('isValid')) {
+                    return;
+                }
+                event.preventDefault();
+            }
+
+            var errorSet = new Set();
+
+            if (usedQuestionIDs.length < 3) {
+                // error not 3 questions
+                errorSet.add("You have asked less than three questions!")
+            }
+
+
+            usedQuestionIDs.forEach(function (value) {
+                var textarea = $('#question_' + value);
+                var content = textarea.val().trim();
+
+                var e = "";
+
+                if (content.length === 0) {
+                    // error lesser than 3 words
+                    errorSet.add("The question is empty!");
+                    e += "The question is empty!";
+                } else {
+                    var res = content.split(/[ ']/);
+                    if (res.length < 3) {
+                        // error lesser than 3 words
+                        errorSet.add("The question \"" + content + "\" has less than three words!");
+                        e += "The question \"" + content + "\" has less than three words!";
+                    }
+                }
+
+                if (content.length !== 0 && countContent(clean(content)) > 1) {
+                    // error question was the same
+                    errorSet.add("You have asked the question \"" + content + "\" several times!");
+                    e += "\nYou have asked the question \"" + content + "\" several times!";
+                }
+
+                textarea[0].setCustomValidity(e.trim());
+
+                if ($('#status_' + value).val() === "") {
+                    errorSet.add("Question \"" + content + "\" was not processed by the backend!");
+                }
+            });
+
+            if (event["type"] === "submit") {
+                if (errorSet.size === 0) {
+                    $(event.currentTarget).data('isValid', true);
+                    //saveState("lastBatchID", config.batchID);
+                    event.currentTarget.submit();
+                    $(event.currentTarget).data('isValid', null);
+                } else {
+                    var errorContent = $("#errorContent");
+                    var body = "<ul>\n";
+
+                    errorSet.forEach(function (value) {
+                        body += "<li>" + value + "</li>\n";
+                    });
+
+                    body += "</ul>\n";
+
+                    errorContent.html(body);
+
+                    $("#errorModal").modal();
+                }
+            }
+        }
+
+        function clean(input) {
+            return input.toLowerCase().replace(/\W/g, '');
+        }
+
+        function countContent(content) {
+            var counter = 0;
+            usedQuestionIDs.forEach(function (value) {
+                if (content == clean($('#question_' + value).val())) {
+                    counter++;
+                }
+            });
+            return counter;
+        }
+
+        function answerQuestion(event) {
+            var question = $(event.currentTarget).parents('.question');
+            var questionID = question.find('.id').val();
+
+            var lat = $('#lat_' + questionID).val();
+            var lng = $('#lng_' + questionID).val();
+            var heading = $('#heading_' + questionID).val();
+            var pitch = $('#pitch_' + questionID).val();
+            var zoom = $('#zoom_' + questionID).val();
+            var questionText = $('#question_' + questionID).val().trim();
+
+            if (questionText == "") {
+                $('#answer_' + questionID).val("please insert a question!");
+                return
+            }
+
+            var json = {
+                question: questionText,
+                lat: lat,
+                lng: lng,
+                heading: heading,
+                pitch: pitch,
+                zoom: zoom
+            };
+
+
+            $.ajax({
+                method: "POST",
+                type: "POST","text/plain",
+                crossDomain: true,
+                dataType: 'text',
+                success: s
+                url: config.backend,
+                data: JSON.stringify(json),
+                contentType:function (data) {
+                    conole.log("foobar");
+                }
+            })
+            /*$.post({
+                url: config.backend,
+                data: JSON.stringify(json),
+                dataType: 'json'
+            })*/
+            .done(function (data) {
+                    var status = data.status;
+                    var response = data.response;
+                    var poi = data.poi;
+                    var intent = data.intent;
+
+                    var pois = data.pois;
+                    var intents = data.intents;
+                    var propertyName = data.propertyName;
+
+                    switch (status) {
+                        case "OK" :
+                            break;
+                        case "NO_INTENT" :
+                            response = "We are sorry, the intention of the question could not be determined.";
+                            break;
+                        case "NO_POI" :
+                            response = "We apologize, no suitable point of interest could be found for the question. (Not all facts are available for all POIs.)";
+                            break;
+                        case "INTERNAL_ERROR" :
+                            response = "We apologize, there was an internal error in the backend while processing the question.";
+                            break;
+                    }
+
+                    if (pois !== undefined && pois.isArray) {
+                        $('#wrongPOI_List_' + questionID).remove();
+                        pois.unshift("other");
+                        $.each(pois, function (i, item) {
+                            $('#wrongPOI_List_' + questionID).append($('<option>', {
+                                value: item,
+                                text: item
+                            }));
+                        });
+                    }
+
+                    if (intents !== undefined && intents.isArray) {
+                        $('#wrongIntent_List_' + questionID).remove();
+                        intents.unshift("other");
+                        $.each(intents, function (i, item) {
+                            $('#wrongIntent_List_' + questionID).append($('<option>', {
+                                value: item,
+                                text: item
+                            }));
+                        });
+                    }
+
+                    $('#poi_' + questionID).val(poi);
+                    $('#intent_' + questionID).val(intent);
+                    $('#status_' + questionID).val(status);
+                    $('#propertyName_' + questionID).val(propertyName);
+
+                    $('#answer_' + questionID).val(response);
+
+                    $('#wrongPOI_' + questionID).prop('disabled', false);
+                    $('#wrongPOI_List_' + questionID).prop('disabled', false);
+                    $('#wrongIntent_' + questionID).prop('disabled', false);
+                    $('#wrongIntent_List_' + questionID).prop('disabled', false);
+                    $('#rating_' + questionID).prop('disabled', false);
+
+                })
+                .done(function (data) {
+                    console.log("foobar");
+                })                
+                .fail(function (xhr, status, error) {
+                    var response = "We are sorry, the connection to the backend could not be established.";
+                    $('#answer_' + questionID).val(response);
+                    $('#status_' + questionID).val("CONNECTION_ERROR");
+
+                    $('#wrongPOI_' + questionID).prop('disabled', true);
+                    $('#wrongPOI_List_' + questionID).prop('disabled', true);
+                    $('#wrongIntent_' + questionID).prop('disabled', true);
+                    $('#wrongIntent_List_' + questionID).prop('disabled', true);
+                    $('#rating_' + questionID).prop('disabled', true);
+                })
+        }
+
+        $(document).ready(function () {
+            $('.question').remove();
+
+            //$('#toggleMetadata_0').click(toggleMetaData);
+            //$('#updateMetadata_0').click(updateMetaData);
+            //$('#deleteQuestion_0').click(deleteQuestion);
+            //$('#answerQuestion_0').click(answerQuestion);
+
+
+            $('#collapseInstructionTrigger').click(toggleCollapseInstruction);
+            var instructionState = getState("instructionsCollapse", "show");
+
+            if (instructionState === "hide") {
+                toggleCollapseInstruction();
+            }
+
+            updateScenarioQuestionsCounter();
+
+            $('.AddButton').html("<i class='fas fa-plus'></i>");
+            $('.RemoveButton').html("<i class='fas fa-trash-alt'></i>");
+            $('.UpdateButton').html("<i class='fas fa-sync'></i>");
+
+            var addQuestionButton = $('#addQuestion');
+            addQuestionButton.html("<i class='fas fa-plus'></i>");
+            addQuestionButton.click(addQuestion);
+            $('#mturk_form').submit(validation);
+
+        });
+    </script>
+    <!-- Modal -->
+    <div class="modal fade" id="errorModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button">&times;</button>
+                    <h4 class="modal-title">Errors</h4>
+                </div>
+                <div class="modal-body" id="errorContent">&nbsp;</div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvGpEDnxfIuYMOcHJrY1UUFkbTlQCB1VY&callback=showSV"></script>
+    <!-- ################################################################ -->
+    <p class="text-center">
+        <input id="submitButton" class="btn btn-primary" value="Submit" type="submit">
+    </p>
+</form>
