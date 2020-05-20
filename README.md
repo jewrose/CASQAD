@@ -1,5 +1,5 @@
  # SpatialQuestions
-## Towards Context-aware Question Answering
+## A Dataset For Context-aware Question Answering 
 
 ### Links
 :earth_africa: [Webpage](https://spatialquestions.sda.tech/) | :page_facing_up: [Paper](paper/) 
