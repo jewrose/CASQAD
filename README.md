@@ -46,7 +46,7 @@ We release a Question Answering dataset containing +5000 questions specifically 
         "Long": -180.0..180.0,
         "Lat": 0.0..180.0
     },
-    "DateAndTime": "2018-06-27T11:37:14.000000455", 
+    "DateAndTime": "2019-06-27T11:37:14.000000455", 
     "Properties": "Possible KG properties that the questions targets, e.g. name/label, opening hours, popularity or abstract. Properties are derived from OpenStreetMap."
 }
 ```
@@ -72,7 +72,7 @@ We release a Question Answering dataset containing +5000 questions specifically 
         "Long": 9.7404004,
         "Lat": 52.375842
     },
-    "DateAndTime": "2018-06-27T11:37:14.000000455",
+    "DateAndTime": "2019-06-27T11:37:14.000000455",
     "Properties": "name"
   },
   {
@@ -88,7 +88,7 @@ We release a Question Answering dataset containing +5000 questions specifically 
         "Long": 9.7347076,
         "Lat": 52.3689436
     },
-    "DateAndTime": "2018-06-27T12:15:05.000000630",
+    "DateAndTime": "2019-06-27T12:15:05.000000630",
     "Properties": "inscription"
   },
   {
@@ -103,7 +103,7 @@ We release a Question Answering dataset containing +5000 questions specifically 
         "Long": 9.738762,
         "Lat": 52.3692021
     },
-    "DateAndTime": "2018-06-27T15:10:49.000000988"    
+    "DateAndTime": "2019-06-27T15:10:49.000000988"    
   },
   {
     "QuestionId": 3,
@@ -117,7 +117,7 @@ We release a Question Answering dataset containing +5000 questions specifically 
         "Long": 9.7455448,
         "Lat": 52.3723053
     },
-    "DateAndTime": "2018-06-27T14:23:51.000000262" 
+    "DateAndTime": "2019-06-27T14:23:51.000000262" 
   },
   {
     "QuestionId": 4,
@@ -132,20 +132,12 @@ We release a Question Answering dataset containing +5000 questions specifically 
         "Long": 9.7417629,
         "Lat": 52.3737913
     },
-    "DateAndTime": "2018-06-27T17:44:33.000000075",
+    "DateAndTime": "2019-06-27T17:44:33.000000075",
     "Properties": "famous"
   }
 ]
 ```
 </details>
-
-
-### Question Collection Process 
-
-**MTurk**
-
-**Overview**
-- Manually correct intermediary NLQs to create **Questions**
 
 ### Contact
 In case you find any issue with our dataset, please inform us on Issues Page.

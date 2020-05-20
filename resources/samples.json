@@ -1,0 +1,80 @@
+[
+  {
+    "QuestionId": 0,
+    "Question": "What is the name of that large building behind the fence?",
+    "StreetView": "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=52.375842,9.7404004&heading=355.0&pitch=-1.8020866768683987&fov=120",
+    "ContextInformation": {
+        "VisualSignals": "large building",
+        "Size": "large",
+        "Direction": "behind",
+        "SpatialSignals": "behind the fence"
+    },    
+    "PointOfView": {
+        "Heading": 355,
+        "Long": 9.7404004,
+        "Lat": 52.375842
+    },
+    "DateAndTime": "2019-06-27T11:37:14.000000455",
+    "Properties": "name"
+  },
+  {
+    "QuestionId": 1,
+    "Question": "Do you know what the plaque on that piece of art in the median says?",
+    "StreetView": "https://www.google.com/maps/@?api=1&map_action=pano&pano=ae5tuNJ_xl1TS4dneHSdgA&heading=210.1266758416503&pitch=-19.78025402272617&fov=120",
+    "ContextInformation": {
+        "VisualSignals": "on that piece of art",
+        "SpatialSignals": "in the median"
+    },
+    "PointOfView": {
+        "Heading": 210.1266758,
+        "Long": 9.7347076,
+        "Lat": 52.3689436
+    },
+    "DateAndTime": "2019-06-27T12:15:05.000000630",
+    "Properties": "inscription"
+  },
+  {
+    "QuestionId": 2,
+    "Question": "Are there cafes on this street?",
+    "StreetView": "https://www.google.com/maps/@?api=1&map_action=pano&pano=5Kn-R_pqCVXEfbr6g78VYw&heading=56.257219084221944&pitch=0.3299029016246635&fov=120",
+    "ContextInformation": {
+        "SpatialSignals": "on this street"
+    },  
+    "PointOfView": {
+        "Heading": 56.25721908,
+        "Long": 9.738762,
+        "Lat": 52.3692021
+    },
+    "DateAndTime": "2019-06-27T15:10:49.000000988"    
+  },
+  {
+    "QuestionId": 3,
+    "Question": "Are there more businesses or houses in this area?",
+    "StreetView": "https://www.google.com/maps/@?api=1&map_action=pano&pano=_K8GeBrB21c9wVXBAdJuKg&heading=2.362851134167954&pitch=-8.960466980952447&fov=120",
+    "ContextInformation": {
+        "SpatialSignals": "in this area"
+    },
+    "PointOfView": {
+        "Heading": 2.362851134,
+        "Long": 9.7455448,
+        "Lat": 52.3723053
+    },
+    "DateAndTime": "2019-06-27T14:23:51.000000262" 
+  },
+  {
+    "QuestionId": 4,
+    "Question": "Is the jeweler store on the right famous?",
+    "StreetView": "https://www.google.com/maps/@?api=1&map_action=pano&pano=xSFL8_WXPspXHmAcs1yI5g&heading=3.603047068367749&pitch=-4.744553947315012&fov=120",
+    "ContextInformation": {
+        "Direction": "right",
+        "SpatialSignals": "on the right"
+    },
+    "PointOfView": {
+        "Heading": 3.603047068,
+        "Long": 9.7417629,
+        "Lat": 52.3737913
+    },
+    "DateAndTime": "2019-06-27T17:44:33.000000075",
+    "Properties": "famous"
+  }
+]
