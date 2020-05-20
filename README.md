@@ -2,7 +2,7 @@
 ## Towards Context-aware Question Answering
 
 ### Links
-:earth_africa: [Webpage](https://jewrose.github.io/SpatialQuestions/) | :page_facing_up: [Paper]() 
+:earth_africa: [Webpage](https://spatialquestions.sda.tech/) | :page_facing_up: [Paper](paper/) 
 
 ### Introduction
 We release a Question Answering dataset containing +5000 questions specifically taking spatial context information into account, i.e. visual features of a surrounding target object, or the user's location and moving direction -- _SpatialQuestions_. The data was collected in a big-scale user study with Amazon's Mechanical Turk platform involving over 400 crowdworkers and annotated semi-automatically in the post-processing. Please refer to our [paper]() for more details about the creation process and dataset statistics. 
@@ -21,7 +21,7 @@ We release a Question Answering dataset containing +5000 questions specifically 
 
 ### Dataset
 
-**License**: You can download the [dataset](resources/data.json) (released with a [MIT License](LICENSE)), or read below to know more.
+**License**: You can download the [dataset](resources/SpatialQuestions.json) (released with a [MIT License](LICENSE)), or read below to know more.
 
 **Format**: The dataset is released in JSON format, where the key `Question` contains the question, `ContextInformation` contains the corresponding visual and spatial signals as phrase and/or just the key word, and `PointOfView` contains the meta data extracted from the [StreetView API](https://developers.google.com/maps/documentation/streetview/intro). The dataset has the following JSON structure:
 
@@ -29,22 +29,17 @@ We release a Question Answering dataset containing +5000 questions specifically 
 {
     "QuestionId": "Unique question ID as integer",
     "Question": "Question phrased by the crowdworker",
-    "StreetView": "Link to the StreetView image showing the focus when the question was phrased",
-    // Context information describes phrases in a question, which refer to either visible features 
-    // of the target object used by a crowdworker to describe it furhter, such as color, size or shape
-    // of a building or monument, or spatial signals that are used to locate the target object, such as 'the tower to my left'
+    "StreetView": "Link to the StreetView image showing the focus when the question was phrased",    
     "ContextInformation": {         
         "VisualSignals": "The phrase that contains the visual signals, e.g. 'yellow building'",        
         "Size/Shape/Color/Salience": "Explicit mentions of visible features of the target object, e.g. 'tall tower'",
         "SpatialSignals": "The phrase that contains the spatial signals, e.g. 'behind the fence'",
         "Deixis/Direction/Position/Vicinity": "Explicit mentions of spatial hints to locate the target object in relation to the user, e.g. 'this building' or 'the building to my left'"
-    },    
-    // Meta information from StreetView. Long and lat describe the GPS position. 
-    // Heading is the viewing direction in absolute degree (0° is north, 90° is east, 180° is south and 270° is west)
+    },        
     "PointOfView": {
-        "Heading": 0..359,
-        "Long": -180.0..180.0,
-        "Lat": 0.0..180.0
+        "Heading": "0..359",
+        "Long": "-180.0..180.0",
+        "Lat": "0.0..180.0"
     },
     "DateAndTime": "2019-06-27T11:37:14.000000455", 
     "Properties": "Possible KG properties that the questions targets, e.g. name/label, opening hours, popularity or abstract. Properties are derived from OpenStreetMap."
