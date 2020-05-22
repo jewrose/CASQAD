@@ -1,11 +1,11 @@
- # SpatialQuestions
-## A Dataset For Context-aware Question Answering 
+ # CASQAD
+## A New Dataset For Context-aware Spatial Question Answering 
 
 ### Links
-:earth_africa: [Webpage](https://spatialquestions.sda.tech/) | :page_facing_up: [Paper](paper/) 
+:earth_africa: [Webpage](https://casqad.sda.tech/ ) | :page_facing_up: [Paper](paper/) 
 
 ### Introduction
-We release a Question Answering dataset containing +5000 questions specifically taking spatial context information into account, i.e. visual features of a surrounding target object, or the user's location and moving direction -- _SpatialQuestions_. The data was collected in a big-scale user study with Amazon's Mechanical Turk platform involving over 400 crowdworkers and annotated semi-automatically in the post-processing. Please refer to our [paper]() for more details about the creation process and dataset statistics. 
+We release a new Context-aware Spatial Question Answering Dataset (called _CASQAD_) containing +5000 questions specifically taking spatial context information into account, i.e. visual features of a surrounding target object, or the user's location and moving direction. The data was collected in a big-scale user study with Amazon's Mechanical Turk platform involving over 400 crowdworkers and annotated semi-automatically in the post-processing. Please refer to our [paper]() for more details about the creation process and dataset statistics. 
 
 
 ### Repository Structure
